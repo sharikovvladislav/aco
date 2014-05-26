@@ -13,7 +13,7 @@ function aco(settings) {
 	
 	var alpha = 0.5; // коэф. коллективного интеллекта
 	var beta = 0.5; // коэф. личного интеллекта
-	var ktau = 0.3; // коэф. испарения феромона
+	var ktau = 0.01; // коэф. испарения феромона
 	
 	var currentVertex;
 	

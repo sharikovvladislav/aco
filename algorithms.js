@@ -10,12 +10,12 @@ function aco(settings) {
 	var bestLength = settings.bestLength;
 	var bestPath = settings.bestPath;
 	
-	var pathFound = false;
+	var pathFound = settings.pathFound || false;
 	var bestCycleLength = 10000000;
 	var pathString = "";
 	
-	var alpha = 0.7; // коэф. коллективного интеллекта
-	var beta = 0.3; // коэф. личного интеллекта
+	var alpha = 0.3; // коэф. коллективного интеллекта
+	var beta = 0.7; // коэф. личного интеллекта
 	var ktau = 0.01; // коэф. испарени¤ феромона
 	
 	var currentVertex;
@@ -184,20 +184,36 @@ function aco(settings) {
 		console.log('<<<<<<<<<<< ---------- NEXT ANT ----------- >>>>>>>>>>>>> RESETING VISITED');
 	}
 	
+    if(pathFound) {
+        var current = start;
+        pathString = "";
+        var next = "";
+        var pathLength = 0;
+        do {
+            next = getMaxValueFromArray(pheromone[current]);
+            if (pathString != "") {
+                pathString += " -> ";
+            }
+            pathLength += graph[current][next]
+            pathString += ""+current;
+            current = next;
+        } while(current != stop);
+        if (pathString != "") {
+            pathString += " -> ";
+        }
+        pathString += ""+current;
+    }
 	// выведем состояние на текущем цикле
 	// выведем лучший путь на текущем цикле, если он есть
 	
-	console.clear();
+	//console.clear();
 	output += toHtml("Уровень феромона после этого цикла поиска: ");
 	output += toHtml(buildTable(pheromone));
 	if(pathFound) {
-		output += toHtml('Путь: '+pathString + '(длина пути: '+bestCycleLength+')');
+		output += toHtml('Путь: '+pathString + '(длина пути: '+pathLength+')');
 		console.log('нашли путь из начальной в конечную');
-		if(bestCycleLength < bestLength) {
-			console.log('путь оказался наилучшим');
-			bestLength = bestCycleLength;
-			bestPath = pathString;
-		}
+		bestLength = pathLength;
+		bestPath = pathString;
 	}
 	else
 	{
@@ -218,6 +234,19 @@ function aco(settings) {
 	//redraw();
 	// g.edges["0"].connection.fg.attr("stroke-width", 10)
 	
+	function getMaxValueFromArray(array) {
+		var min = -1;
+		var minVertex = null;
+		for(vertex in array) {
+			var value = array[vertex];
+			if(value > min) {
+				min = value;
+				minVertex = vertex;
+			}
+		}
+		return minVertex;
+	}
+    
 	function buildTable (matrix) {
 		var table = "<table border=1>";
 		
@@ -242,6 +271,7 @@ function aco(settings) {
 				var value = matrix[row][col];
 				console.log(value);
 				var result = round(value);
+                result = result < 0.1 ? "0" : result;
 				table += "<td>"+result+"</td>";
 			}
 			table += "<tr>";

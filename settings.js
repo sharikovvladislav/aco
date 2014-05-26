@@ -16,6 +16,7 @@ var acoOnAir = false; // запущен ли алгоритм муравья с�
 var stepCounter = 0;
 var bestPath = "";
 var bestLength = 10000000;
+var pathFound = false;
 
 // vars for both algo's
 var startPoint = null;
@@ -481,7 +482,8 @@ window.onload = function() {
 			pheromone: pheromone,
 			step: stepCounter,
 			bestLength: acoBestLength,
-			bestPath: acoBestPath
+			bestPath: acoBestPath,
+            pathFound: pathFound,
 		};
 
 		$("#acoStep").html(stepCounter);
@@ -524,7 +526,8 @@ window.onload = function() {
 		
 		acoBestLength = 10000000;
 		acoBestPath = "";
-		
+		pathFound = false;
+        
 		acoOnAir = false;
 		
 		if(stepCounter != 0) {

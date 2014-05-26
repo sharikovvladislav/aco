@@ -1,0 +1,183 @@
+<html>
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	
+	<!-- for graph dracula framework -->
+	<script type="text/javascript" src="js/jquery_bob.js"></script>
+	<script type="text/javascript" src="js/raphael-min.js"></script>
+    <script type="text/javascript" src="js/dracula_graffle.js"></script>
+    <script type="text/javascript" src="js/dracula_graph.js"></script>
+	
+	<!-- my files -->
+    <script type="text/javascript" src="settings.js"></script>
+	<script type="text/javascript" src="algorithms.js"></script>
+	
+	<!-- for tabs -->
+
+	<script src="js/tabs.js"></script>
+
+	<link rel="stylesheet" href="css/tabs.css">
+	
+	<script>
+		$(function() {
+			$( "#tabs" ).tabs();
+		});
+	</script>
+	
+	<style>
+		body {
+			font-size: 10px;
+		}
+		#canvas {
+			border: 2px solid #ccc;
+		}
+		fieldset {
+			float: none;
+			height: 100%;s
+		}
+		fieldset>fieldset {
+			float: left;
+		}
+		fieldset>fieldset>fieldset {
+		}
+
+		.results {
+			overflow: auto;
+			max-height: 190px;
+		}
+		table {
+			font-size: 100%;
+		}
+		tr *:first-child {
+			background-color: #CCCCCC;
+		}
+		table tr:first-child {
+			background-color: #CCCCCC;
+		}
+		#tabs-1,
+		#tabs-2,
+		#tabs-3,
+		#tabs-4 {
+			height: 290px;
+		}
+		#tabs * {
+			-moz-box-sizing: border-box;
+		}
+	</style>
+</head>
+<body>
+<div id="canvas"></div>
+
+<input type='hidden' id='count' value='0'>
+
+<div id="tabs">
+<ul>
+<li><a href="#tabs-1">Работа с графом</a></li>
+<li><a href="#tabs-2">Матрица весов графа</a></li>
+<li><a href="#tabs-3">Алгоритм Муравья</a></li>
+<li><a href="#tabs-4">Алгоритм A*</a></li>
+</ul>
+<div id="tabs-1">
+	<fieldset>
+		<legend>Работа с графом</legend>
+		<fieldset>
+			<legend>Вершины</legend>
+			<fieldset>
+				<legend>Добавление</legend>
+				<p><button onclick="newNode();">Добавить</button>
+			</fieldset>
+			<fieldset class='deleteNode' disabled title='Сначала нужно добавить вершину'> 
+				<legend>Удаление</legend>
+				<p>Вершина: <select id='deleteNode'></select>
+				<p><button onclick="removeNode();">Удалить</button>
+			</fieldset>
+		</fieldset>
+		<fieldset id='edges' disabled title='Сначала нужно добавить вершину'>
+			<legend>Ребра</legend>
+			<fieldset>
+				<legend>Добавление</legend>
+				<p>Откуда: <select id='source'></select>
+				<p>Куда: <select id='dest'></select>
+				<p>Вес: <input type='text' id='weight'>
+				<p><button onclick="newEdge();" title='Добавить ребро'>Добавить</button>
+			</fieldset>
+			<fieldset id='deleteEdges'>
+				<legend>Удаление</legend>
+				<p>Откуда: <select id='delSource'></select>
+				<p>Куда: <select id='delDest'></select>
+				<p><button onclick="removeEdge();" title='Удалить ребро'>Удалить</button>
+			</fieldset>
+		</fieldset>
+
+
+		<fieldset id='settings' disabled title='Сначала нужно добавить вершину'>
+			<legend>Настройки</legend>
+			<p>Начальная: <select id='start'></select><br>(зеленая вершина)
+			<p>Целевая: <select id='stop'></select><br>(красная вершина)
+			<p><button onclick="setStartAndStop('start', 'stop');" title='Обновить начальную и целевую вершину'>Обновить вершины</button>
+		</fieldset>
+
+		<fieldset>
+			<legend>Импорт</legend>
+
+				<p>Файл с графом: <input type=file id='fileGraph'/>
+				<p><button onclick="loadGraph();" title='Загрузка графов'>Загрузить данные</button>
+
+		</fieldset>
+
+	</fieldset>
+</div>
+<div id="tabs-2">
+	<div id="matrix">Вершины еще не добавлены</div>
+</div>
+<div id="tabs-3">
+	<fieldset id='aco' disabled title='Сначала добавьте вершины!'>
+	<legend>Алгоритм Муравья</legend>
+		<fieldset>
+			<legend>Входные данные</legend>
+			<p>Кол-во муравьев: <input type='text' id='antCount' />
+		</fieldset>
+		<fieldset>
+			<legend>Запуск</legend>
+			<p><input type='button' onclick='acoAlgo();' value='Сделать шаг' /> <input type='button' onclick='resetAco();' value='Сброс результатов' />
+			<p>Текущий шаг: <b id='acoStep'>Не запущен</b>
+		</fieldset>
+		<fieldset>
+		<legend>Общий результат</legend>
+			<div id='acoResults'  class='results'>Результаты отсутствуют,т.к. алгоритм еще не был запущен.</div>
+		</fieldset>
+		<fieldset>
+		<legend>Протокол поиска</legend>
+			<div id='acoCycleResults'  class='results'>Результаты отсутствуют,т.к. алгоритм еще не был запущен.</div>
+		</fieldset>
+	</fieldset>
+</div>
+<div id="tabs-4">
+	<fieldset id='astar' disabled title='Сначала добавьте вершины!'>
+	<legend>Алгоритм A*</legend>
+		<fieldset>
+			<legend>Загрузите матрицу эвристик для вершин</legend>
+			<b id='vertexCountLabel'></b>
+			<p>Файл с эвристической функцией: 
+			<p><input type=file id='fileHeur'/>
+			<p><button onclick="loadHeur();" title='Загрузка графов'>Загрузить данные</button>
+		</fieldset>
+		<fieldset>
+			<legend>Эвристика</legend>
+			<div id='heuristic'>Не задана</div>
+		</fieldset>
+		<fieldset>
+			<legend>Запуск</legend>
+			<p><input type='button' onclick='aStarAlgo();' value='Найти путь' />
+		</fieldset>
+		<fieldset>
+			<legend>Результат</legend>
+			<div id='aStarResults' class='results'></div>
+		</fieldset>
+	</fieldset>
+</div>
+</div>
+
+
+</body>
+</html>

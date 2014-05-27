@@ -14,8 +14,8 @@ function aco(settings) {
 	var bestCycleLength = 10000000;
 	var pathString = "";
 	
-	var alpha = 0.5; // коэф. коллективного интеллекта
-	var beta = 0.5; // коэф. личного интеллекта
+	var alpha = 0.7; // коэф. коллективного интеллекта
+	var beta = 0.3; // коэф. личного интеллекта
 	var ktau = 0.01; // коэф. испарени¤ феромона
 	
 	var currentVertex;

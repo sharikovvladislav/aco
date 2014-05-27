@@ -5,8 +5,8 @@ function aco(settings) {
 	var stop = settings.stop;
 	var steps = settings.step;
 	
-	console.dir(settings);
-	
+	//console.dir(settings);
+
 	var alpha = 0.7; // коэф. коллективного интеллекта
 	var beta = 0.3; // коэф. личного интеллекта
 	var ktau = 0.1; // коэф. испарени¤ феромона
@@ -89,43 +89,36 @@ function aco(settings) {
 				// запомним путь муравь¤, добавим вершину в некий массив
 				path.push(currentVertex);
 				var antPath = path.slice(); // нам понадобитс¤ массив path еще	
-		
-			
+		        var pairs = [];
+
 				// проверим не ¤вл¤етс¤ ли концом нова¤ вершина
 				if(currentVertex == stop) {
-					// муравей нашел целевую вершину
-					// расчитаем уровень феромона, увеличим его и т.п.
-					
-					
-					
+                    for(var x = 1; x < antPath.length; x++) {
+                        var pair = {
+                            previous: antPath[x-1],
+                            next: antPath[x]
+                        }
+                        pairs.push(pair);
+                    }
+
 					// дальше считаем длину пути (нужно дл¤ уровн¤ феромона) 104-119
-					var pathCopy = path.slice(); // нам понадобитс¤ массив path еще			
-					
-					
-					var dest = pathCopy.pop();
-					var source;
-					var length = 0;
-					while(source = pathCopy.pop()) {
-						length = length + graph[source][dest];
-						
-						dest = source;
-					}
-				
-					
-					
+                    var length = 0;
+                    for(var item in pairs) {
+                        var pair = pairs[item];
+                        length += graph[pair.previous][pair.next];
+                    }
+				    console.log('length', length)
+
 					// определ¤ем прирост феромона 1/Lk(t) формула 2
 					var deltaTau = 5/length;
-					var dest = path.pop();
-					var source;
-					while(source = path.pop()) {
-						var oldPheromone = pheromone[source][dest];
-						var newPheromone = oldPheromone+deltaTau; // обновление феромона формула 3
-						
-						pheromone[source][dest] = newPheromone;
-						
-						dest = source;
-					}
-					
+                    for(var item in pairs) {
+                        var pair = pairs[item];
+                        var oldPheromone = pheromone[pair.previous][pair.next];
+                        var newPheromone = oldPheromone+deltaTau; // обновление феромона формула 3
+
+                        pheromone[pair.previous][pair.next] = newPheromone;
+                    }
+
 					pathFound = true;
 					// определим лучшую длину пути на цикле
 					
@@ -136,7 +129,8 @@ function aco(settings) {
 			}
 			visited.reset();			
 		}
-		
+
+
 		// испарение феромона
 		for(var row in pheromone) {
 			for(var col in pheromone[row]) {

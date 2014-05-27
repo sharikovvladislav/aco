@@ -1,27 +1,26 @@
 function aco(settings) {
-	var vertexCount = settings.vertexCount;
 	var antCount = settings.antCount;
 	var graph = settings.graph;
 	var start = settings.start;
 	var stop = settings.stop;
-	var redraw = settings.redraw;
-	var pheromone = settings.pheromone;
-	var step = settings.step;
-	var bestLength = settings.bestLength;
-	var bestPath = settings.bestPath;
+	var steps = settings.step;
 	
-	var pathFound = settings.pathFound || false;
-	var bestCycleLength = 10000000;
-	var pathString = "";
+	console.dir(settings);
 	
 	var alpha = 0.5; // коэф. коллективного интеллекта
 	var beta = 0.5; // коэф. личного интеллекта
-	var ktau = 0.01; // коэф. испарени¤ феромона
+	var ktau = 0.1; // коэф. испарени¤ феромона
 	
 	var currentVertex;
+
+	var pathFound = false;
 	
-	console.log('graph: ');
-	console.log(JSON.stringify(graph));
+	var pheromone = jQuery.extend(true, {}, graph);
+	for(var row in pheromone) {
+		for(var col in pheromone[row]) {
+			pheromone[row][col] = 0.01;
+		}
+	}
 
 	// пам¤ть муравь¤
 	var visited = {};
@@ -33,160 +32,122 @@ function aco(settings) {
 	}
 	visited.reset();
 	
-	var output;
-	output = toHtml('<b>НАЧАЛО '+step+' ЦИКЛА ПОИСКА</b>');
-	// начало цикла перебора всех муравьев
-	var count = 0;
-	while(antCount > 0) {
-		count += 1;
-		currentVertex = start;
-		var path = [];
-		path.push(currentVertex); // добавим начальную вершину
-		// начало цикла одного муравь¤, который проходит по всем вершинам
-		// делать или пока не достигнет конца
-		while(checkAvailability(currentVertex)) {
-		//checkAvailability(currentVertex);
-			console.log('current vertex: '+currentVertex);
-			var intervals = {};
-			intervals.last = 0;
-			
-			var denom = 0;
-			for(col in graph[currentVertex]) {  // этот цикл формирует знаменатель формулы
-				var weight = graph[currentVertex][col];
-				// условие, что есть путь из текущей в целом цикле в текущую в данном цикле
-				// условие, что вершина еще не посещена
-				if(weight != 0 && visited[col] != true) {
-					var tau = pheromone[currentVertex][col];
-					denom = denom + getAttractiveness(tau, weight);
-				}
-			}
-			
-			for(col in graph[currentVertex]) { // этот цикл формирует числитель и ищет сам результат формулы
-				var weight = graph[currentVertex][col];
-				// условие, что есть путь из текущей в целом цикле в текущую в данном цикле
-				// условие, что вершина еще не посещена
-				if(weight != 0 && visited[col] != true) {
-					var tau = pheromone[currentVertex][col];
-					var nom = getAttractiveness(tau, weight);
-					var probability = nom/denom;
-					//console.log('p: '+probability+' last: '+intervals.last);
-					intervals[col] = probability+intervals.last;
-					intervals.last = probability+intervals.last;
-				}
-			}
-			
-			console.log('intervals:');
-			console.log(JSON.stringify(intervals));
-			
-			var rand = Math.random();
-			var nextVertex = 0;
-			for(vertex in intervals) {
-				if (rand < intervals[vertex]) {
-					nextVertex = parseInt(vertex,10);
-					break;
-				}
-			}
-			console.log('rand: '+rand);
-			console.log('next vertex: '+nextVertex);
-			visited[currentVertex] = true;
-			
-			// сделаем найденную вершину текущей
-			currentVertex = nextVertex;
-			
-			// запомним путь муравь¤, добавим вершину в некий массив
-			path.push(currentVertex);
-			var antPath = path.slice(); // нам понадобитс¤ массив path еще	
-	
-		
-			// проверим не ¤вл¤етс¤ ли концом нова¤ вершина
-			if(currentVertex == stop) {
-				// муравей нашел целевую вершину
-				// расчитаем уровень феромона, увеличим его и т.п.
+	for(var step = 1; step <= steps; step++) {
+		// начало цикла перебора всех муравьев
+		for(var currentAnt = 1; currentAnt <= antCount; currentAnt++) {
+			count += 1;
+			currentVertex = start;
+			var path = [];
+			path.push(currentVertex); // добавим начальную вершину
+			// начало цикла одного муравь¤, который проходит по всем вершинам
+			// делать или пока не достигнет конца
+			while(checkAvailability(currentVertex)) {
+			//checkAvailability(currentVertex);
+				var intervals = {};
+				intervals.last = 0;
 				
-				console.log("path: ");
-				console.log(JSON.stringify(path));
-				
-				
-				// дальше считаем длину пути (нужно дл¤ уровн¤ феромона) 104-119
-				var pathCopy = path.slice(); // нам понадобитс¤ массив path еще			
-				
-				console.log("path copy: ");
-				console.log(JSON.stringify(pathCopy));
-				
-				var dest = pathCopy.pop();
-				var source;
-				var length = 0;
-				while(source = pathCopy.pop()) {
-					console.log("dest: " + dest + " source: " + source);
-					length = length + graph[source][dest];
-					
-					dest = source;
-				}
-				
-				console.log("length: " + length);
-				
-				console.log('cell found!!!');
-				
-				console.log('matrix: ');
-				console.log(JSON.stringify(graph));
-				
-				// определ¤ем прирост феромона 1/Lk(t) формула 2
-				var deltaTau = 5/length;
-				var dest = path.pop();
-				var source;
-				while(source = path.pop()) {
-					var oldPheromone = pheromone[source][dest];
-					var newPheromone = oldPheromone+deltaTau; // обновление феромона формула 3
-					
-					console.log('pheromone levels: old = '+oldPheromone+' new = ' + newPheromone);
-					
-					pheromone[source][dest] = newPheromone;
-					
-					dest = source;
-				}
-				
-				console.log('pheromone level: ');
-				console.log(JSON.stringify(pheromone));
-				pathFound = true;
-				// определим лучшую длину пути на цикле
-				console.clear();
-				console.log('length: '+length);
-				
-				if(length < bestCycleLength) {
-					pathString = ""; // для сохранения пути
-					bestCycleLength = length;
-					var tmp;
-					while(tmp = antPath.shift()) {
-						if (pathString != "") {
-							pathString += " -> ";
-						}
-						pathString += ""+tmp;
+				var denom = 0;
+				for(col in graph[currentVertex]) {  // этот цикл формирует знаменатель формулы
+					var weight = graph[currentVertex][col];
+					// условие, что есть путь из текущей в целом цикле в текущую в данном цикле
+					// условие, что вершина еще не посещена
+					if(weight != 0 && visited[col] != true) {
+						var tau = pheromone[currentVertex][col];
+						denom = denom + getAttractiveness(tau, weight);
 					}
 				}
 				
-				break; // муравей дошел до цели, а значит выходим из цикла, больше ему ходить нельз¤. 
-			}
-                       
-			// здесь кончаетс¤ цикл одного муравь¤
-		}
-      
+				for(col in graph[currentVertex]) { // этот цикл формирует числитель и ищет сам результат формулы
+					var weight = graph[currentVertex][col];
+					// условие, что есть путь из текущей в целом цикле в текущую в данном цикле
+					// условие, что вершина еще не посещена
+					if(weight != 0 && visited[col] != true) {
+						var tau = pheromone[currentVertex][col];
+						var nom = getAttractiveness(tau, weight);
+						var probability = nom/denom;
+						//console.log('p: '+probability+' last: '+intervals.last);
+						intervals[col] = probability+intervals.last;
+						intervals.last = probability+intervals.last;
+					}
+				}
+				
+				
+				var rand = Math.random();
+				var nextVertex = 0;
+				for(vertex in intervals) {
+					if (rand < intervals[vertex]) {
+						nextVertex = parseInt(vertex,10);
+						break;
+					}
+				}
 
-		antCount--;
-		visited.reset();
-	
+				visited[currentVertex] = true;
+				
+				// сделаем найденную вершину текущей
+				currentVertex = nextVertex;
+				
+				// запомним путь муравь¤, добавим вершину в некий массив
+				path.push(currentVertex);
+				var antPath = path.slice(); // нам понадобитс¤ массив path еще	
 		
-		console.log('<<<<<<<<<<< ---------- NEXT ANT ----------- >>>>>>>>>>>>> RESETING VISITED');
-	}
-	
-	// испарение феромона
-	for(row in pheromone) {
-		for(col in pheromone[row]) {
-			var oldPheromone = pheromone[row][col];
-			var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
-			pheromone[row][col] = newPheromone;
+			
+				// проверим не ¤вл¤етс¤ ли концом нова¤ вершина
+				if(currentVertex == stop) {
+					// муравей нашел целевую вершину
+					// расчитаем уровень феромона, увеличим его и т.п.
+					
+					
+					
+					// дальше считаем длину пути (нужно дл¤ уровн¤ феромона) 104-119
+					var pathCopy = path.slice(); // нам понадобитс¤ массив path еще			
+					
+					
+					var dest = pathCopy.pop();
+					var source;
+					var length = 0;
+					while(source = pathCopy.pop()) {
+						length = length + graph[source][dest];
+						
+						dest = source;
+					}
+				
+					
+					
+					// определ¤ем прирост феромона 1/Lk(t) формула 2
+					var deltaTau = 5/length;
+					var dest = path.pop();
+					var source;
+					while(source = path.pop()) {
+						var oldPheromone = pheromone[source][dest];
+						var newPheromone = oldPheromone+deltaTau; // обновление феромона формула 3
+						
+						pheromone[source][dest] = newPheromone;
+						
+						dest = source;
+					}
+					
+					pathFound = true;
+					// определим лучшую длину пути на цикле
+					
+					break; // муравей дошел до цели, а значит выходим из цикла, больше ему ходить нельз¤. 
+				}
+						   
+				// здесь кончаетс¤ цикл одного муравь¤
+			}
+			visited.reset();			
+		}
+		
+		// испарение феромона
+		for(var row in pheromone) {
+			for(var col in pheromone[row]) {
+				var oldPheromone = pheromone[row][col];
+				var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
+				pheromone[row][col] = newPheromone;
+			}
 		}
 	}
 	
+	// далее построение пути
     if(pathFound) {
         var current = start;
         pathString = "";
@@ -210,25 +171,21 @@ function aco(settings) {
 	// выведем лучший путь на текущем цикле, если он есть
 	
 	//console.clear();
-	output += toHtml("Уровень феромона после этого цикла поиска: ");
-	output += toHtml(buildTable(pheromone));
+	var pheromonesMatrix;
+	pheromonesMatrix = toHtml(buildTable(pheromone));
 	if(pathFound) {
-		output += toHtml('Путь: '+pathString + '(длина пути: '+pathLength+')');
-		console.log('нашли путь из начальной в конечную');
 		bestLength = pathLength;
 		bestPath = pathString;
+	} else {
+		bestLength = "путь не найден";
+		bestPath = "путь не найден";
 	}
-	else
-	{
-		output += toHtml('Путь из начальной вершины в конечную в цикле '+step+' не найден');
-	}
-	output += toHtml('<b>КОНЕЦ '+step+' ЦИКЛА ПОИСКА</b>');
-	
+	var totalResult;
+	totalResult = toHtml("Путь: "+bestPath);
+	totalResult += toHtml("Длина пути: "+bestLength);
 	var results = {
-		outputHTML: output,
-		pheromone: pheromone, 
-		length: bestLength,
-		path: bestPath
+		pheromonesMatrix: pheromonesMatrix,
+		totalResult: totalResult,
 	}
 	return results;
 	//checkAvailability(currentVertex);
@@ -272,7 +229,6 @@ function aco(settings) {
 			for (col in matrix[row])
 			{	
 				var value = matrix[row][col];
-				console.log(value);
 				var result = round(value);
                 result = result < 0.1 ? "0" : result;
 				table += "<td>"+result+"</td>";
@@ -486,8 +442,6 @@ function aStar(settings) {
 		}
 		return false;
 	}
-	
-	console.log(output);
 	
 	var results = {
 		outputHTML: output,

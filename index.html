@@ -40,10 +40,9 @@
 		}
 		fieldset>fieldset>fieldset {
 		}
-
 		.results {
 			overflow: auto;
-			max-height: 190px;
+			max-height: 200px;
 		}
 		table {
 			font-size: 100%;
@@ -136,19 +135,16 @@
 		<fieldset>
 			<legend>Входные данные</legend>
 			<p>Кол-во муравьев: <input type='text' id='antCount' />
-		</fieldset>
-		<fieldset>
-			<legend>Запуск</legend>
-			<p><input type='button' onclick='acoAlgo();' value='Сделать шаг' /> <input type='button' onclick='resetAco();' value='Сброс результатов' />
-			<p>Текущий шаг: <b id='acoStep'>Не запущен</b>
+			<p>Кол-во шагов: <input type='text' id='stepCount' />
+			<p><input type='button' onclick='acoAlgo();' value='Сделать шаг' />
 		</fieldset>
 		<fieldset>
 		<legend>Общий результат</legend>
 			<div id='acoResults'  class='results'>Результаты отсутствуют,т.к. алгоритм еще не был запущен.</div>
 		</fieldset>
-		<fieldset>
-		<legend>Протокол поиска</legend>
-			<div id='acoCycleResults'  class='results'>Результаты отсутствуют,т.к. алгоритм еще не был запущен.</div>
+		<fieldset style="width: 50%;">
+		<legend>Матрица феромонов</legend>
+			<div id='acoPheroMatrix'  class='results'>Результаты отсутствуют,т.к. алгоритм еще не был запущен.</div>
 		</fieldset>
 	</fieldset>
 </div>

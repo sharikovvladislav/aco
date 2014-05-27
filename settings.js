@@ -11,12 +11,6 @@ var heuristicArray = {};
 var tmpLoadedArray = [];
 
 // for aco
-var pheromone = {};
-var acoOnAir = false; // запущен ли алгоритм муравья сейчас
-var stepCounter = 0;
-var bestPath = "";
-var bestLength = 10000000;
-var pathFound = false;
 
 // vars for both algo's
 var startPoint = null;
@@ -449,95 +443,43 @@ window.onload = function() {
 	}
 	
 	acoAlgo = function() {
-		// для проверки пустое ли поле с кол-вом муравьев
-		var antCount = parseInt($('#antCount').val(), 10) || 0;
-		console.log(startAndStopIsSetCheck());
-		if(!startAndStopIsSetCheck()) {
-			alert('Не установлены начальная и конечные вершины! Необходимо установить');
+		var ants = parseInt($("#antCount").val(), 10) || null;
+		var steps = parseInt($("#stepCount").val(), 10) || null;
+		
+		if(startPoint == null || stopPoint == null) {
+			alert("Установите начало и конец");
 			return;
 		}
-		if(antCount == 0) {
-			alert('Введите кол-во муравьев');
+		if(ants == null) {
+			alert("Введите кол-во муравьев");
 			return;
 		}
-
-		// обнуляем и создаем матрицу для феромонов
-		if(acoOnAir == false) {
-			resetAco();
+		if(steps == null) {
+			alert("Введите кол-во шагов");
+			return;
 		}
 		
-		// определяем начало и конец		
-		var source = startPoint;//parseInt($('#start').val(), 10);
-		var dest = stopPoint;//parseInt($('#stop').val(), 10);
-			
-		stepCounter += 1;
-			
+		console.log(ants);
+		
 		var settings = {
-			start: 	source,
-			stop: dest,
+			antCount: ants,
 			graph: weightArray,
-			vertexCount: vertexCount,
-			antCount: antCount,
-			redraw: redraw,
-			pheromone: pheromone,
-			step: stepCounter,
-			bestLength: acoBestLength,
-			bestPath: acoBestPath,
-            pathFound: pathFound,
+			start: startPoint,
+			stop: stopPoint,
+			step: steps,
 		};
-
-		$("#acoStep").html(stepCounter);
 		
-		$("#antCount").attr("disabled", "disabled");
+		var results = aco(settings);
 		
-		acoOnAir = true;
-		//console.dir(settings);
-		var result = aco(settings);
-		console.log(result);
-		if(stepCounter == 1) {
-			$("#acoResults").html("");
-			$("#acoCycleResults").html("");
-		}
-		$("#acoCycleResults").prepend(result.outputHTML);
-		if(result.path != "") {
-			$("#acoResults").html("<p>Возможный путь найден!</p><p>Путь: "+result.path+"</p><p>Длина пути: "+result.length+"</p>");
-		}
-		else
-		{
-			$("#acoResults").html("<p>Путь пока не найден (возможно, пути не существует)</p>");
-		}
-		//console.clear();
-		console.log(result);
-		acoBestLength = result.length;
-		acoBestPath = result.path;
-		pheromone = jQuery.extend(true, {}, pheromone); // обновляем уровень феромона в переменной этого файла
+		console.dir(results);
 		
-		//console.log(JSON.stringify(pheromone));
+		
+		$("#acoResults").html(results.totalResult);
+		$("#acoPheroMatrix").html(results.pheromonesMatrix);
 	}
 	
 	resetAco = function () {
-		pheromone = jQuery.extend(true, {}, weightArray);
-
-		for (row in pheromone) {
-			for(col in pheromone[row]) {
-				pheromone[row][col] = 0.1;
-			}
-		}
 		
-		acoBestLength = 10000000;
-		acoBestPath = "";
-		pathFound = false;
-        
-		acoOnAir = false;
-		
-		if(stepCounter != 0) {
-			$("#acoCycleResults").html("Результаты стерты. Запустите алгоритм.");
-			$("#acoResults").html("Результаты стерты. Запустите алгоритм.");
-		}
-		
-		stepCounter = 0;
-		$("#antCount").removeAttr("disabled");
-		$("#acoStep").html("Результат сброшен. Сделайте шаг.");
 	}
 	
 	aStarAlgo = function() {

@@ -14,8 +14,8 @@ function aco(settings) {
 	var bestCycleLength = 10000000;
 	var pathString = "";
 	
-	var alpha = 0.3; // коэф. коллективного интеллекта
-	var beta = 0.7; // коэф. личного интеллекта
+	var alpha = 0.5; // коэф. коллективного интеллекта
+	var beta = 0.5; // коэф. личного интеллекта
 	var ktau = 0.01; // коэф. испарени¤ феромона
 	
 	var currentVertex;
@@ -149,6 +149,8 @@ function aco(settings) {
 				console.log(JSON.stringify(pheromone));
 				pathFound = true;
 				// определим лучшую длину пути на цикле
+				console.clear();
+				console.log('length: '+length);
 				
 				if(length < bestCycleLength) {
 					pathString = ""; // для сохранения пути
@@ -167,21 +169,22 @@ function aco(settings) {
                        
 			// здесь кончаетс¤ цикл одного муравь¤
 		}
-        
-        // испарение феромона
-        for(row in pheromone) {
-            for(col in pheromone[row]) {
-                var oldPheromone = pheromone[row][col];
-                var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
-                pheromone[row][col] = newPheromone;
-            }
-        }
+      
 
 		antCount--;
 		visited.reset();
 	
 		
 		console.log('<<<<<<<<<<< ---------- NEXT ANT ----------- >>>>>>>>>>>>> RESETING VISITED');
+	}
+	
+	// испарение феромона
+	for(row in pheromone) {
+		for(col in pheromone[row]) {
+			var oldPheromone = pheromone[row][col];
+			var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
+			pheromone[row][col] = newPheromone;
+		}
 	}
 	
     if(pathFound) {

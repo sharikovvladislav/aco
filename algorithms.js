@@ -7,8 +7,8 @@ function aco(settings) {
 	
 	console.dir(settings);
 	
-	var alpha = 0.5; // коэф. коллективного интеллекта
-	var beta = 0.5; // коэф. личного интеллекта
+	var alpha = 0.7; // коэф. коллективного интеллекта
+	var beta = 0.3; // коэф. личного интеллекта
 	var ktau = 0.1; // коэф. испарени¤ феромона
 	
 	var currentVertex;

@@ -7,9 +7,9 @@ function aco(settings) {
 	
 	//console.dir(settings);
 
-	var alpha = 0.7; // коэф. коллективного интеллекта
-	var beta = 0.3; // коэф. личного интеллекта
-	var ktau = 0.1; // коэф. испарени¤ феромона
+	var alpha = 0.5; // коэф. коллективного интеллекта
+	var beta = 0.5; // коэф. личного интеллекта
+	var ktau = 0.01; // коэф. испарени¤ феромона
 	
 	var currentVertex;
 
@@ -111,16 +111,22 @@ function aco(settings) {
 
 					// определ¤ем прирост феромона 1/Lk(t) формула 2
 					var deltaTau = 5/length;
-                    for(var item in pairs) {
-                        var pair = pairs[item];
-                        var oldPheromone = pheromone[pair.previous][pair.next];
-                        var newPheromone = oldPheromone+deltaTau; // обновление феромона формула 3
 
-                        pheromone[pair.previous][pair.next] = newPheromone;
+                    // испарение феромона
+                    for(var row; row < pheromone.length; row++) {
+                        for(var col in pheromone[row]) {
+                            var oldPheromone = pheromone[row][col];
+                            var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
+                            if(isPairExistsInPath(row, col, pairs)) {
+                                pheromone[row][col] = newPheromone+deltaTau;
+                                console.log('updating level');
+                            } else {
+                                pheromone[row][col] = newPheromone;
+                            }
+                        }
                     }
 
 					pathFound = true;
-					// определим лучшую длину пути на цикле
 					
 					break; // муравей дошел до цели, а значит выходим из цикла, больше ему ходить нельз¤. 
 				}
@@ -128,16 +134,6 @@ function aco(settings) {
 				// здесь кончаетс¤ цикл одного муравь¤
 			}
 			visited.reset();			
-		}
-
-
-		// испарение феромона
-		for(var row in pheromone) {
-			for(var col in pheromone[row]) {
-				var oldPheromone = pheromone[row][col];
-				var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
-				pheromone[row][col] = newPheromone;
-			}
 		}
 	}
 	
@@ -187,7 +183,17 @@ function aco(settings) {
 	
 	//redraw();
 	// g.edges["0"].connection.fg.attr("stroke-width", 10)
-	
+
+    function isPairExistsInPath(prev, next, pairs) {
+        for(var item in pairs) {
+            var pair = pairs[item];
+            if(pair.previous == row && pair.next == next) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 	function getMaxValueFromArray(array) {
 		var min = -1;
 		var minVertex = null;

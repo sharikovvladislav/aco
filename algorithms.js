@@ -113,7 +113,7 @@ function aco(settings) {
 					var deltaTau = 5/length;
 
                     // испарение феромона
-                    for(var row; row < pheromone.length; row++) {
+                    for(var row in pheromone) {
                         for(var col in pheromone[row]) {
                             var oldPheromone = pheromone[row][col];
                             var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3

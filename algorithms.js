@@ -5,8 +5,8 @@ function aco(settings) {
 	var stop = settings.stop;
 	var steps = settings.step;
 	
-	console.dir(settings);
-	
+	//console.dir(settings);
+
 	var alpha = 0.7; // коэф. коллективного интеллекта
 	var beta = 0.3; // коэф. личного интеллекта
 	var ktau = 0.1; // коэф. испарени¤ феромона

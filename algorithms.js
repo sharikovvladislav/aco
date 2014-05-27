@@ -89,18 +89,18 @@ function aco(settings) {
 				// запомним путь муравь¤, добавим вершину в некий массив
 				path.push(currentVertex);
 				var antPath = path.slice(); // нам понадобитс¤ массив path еще	
-		
+		        var pairs = [];
+                for(var x = 0; x < antPath.length; x++) {
+
+                }
 			
 				// проверим не ¤вл¤етс¤ ли концом нова¤ вершина
 				if(currentVertex == stop) {
 					// муравей нашел целевую вершину
 					// расчитаем уровень феромона, увеличим его и т.п.
-					
-					
-					
+
 					// дальше считаем длину пути (нужно дл¤ уровн¤ феромона) 104-119
-					var pathCopy = path.slice(); // нам понадобитс¤ массив path еще			
-					
+					var pathCopy = path.slice(); // нам понадобитс¤ массив path еще
 					
 					var dest = pathCopy.pop();
 					var source;

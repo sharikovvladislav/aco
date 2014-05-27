@@ -41,6 +41,14 @@ function aco(settings) {
 			path.push(currentVertex); // добавим начальную вершину
 			// начало цикла одного муравь¤, который проходит по всем вершинам
 			// делать или пока не достигнет конца
+            // испарение феромона
+            for(var row in pheromone) {
+                for(var col in pheromone[row]) {
+                    var oldPheromone = pheromone[row][col];
+                    var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
+                    pheromone[row][col] = newPheromone;
+                }
+            }
 			while(checkAvailability(currentVertex)) {
 			//checkAvailability(currentVertex);
 				var intervals = {};
@@ -111,19 +119,9 @@ function aco(settings) {
 
 					// определ¤ем прирост феромона 1/Lk(t) формула 2
 					var deltaTau = 5/length;
-
-                    // испарение феромона
-                    for(var row in pheromone) {
-                        for(var col in pheromone[row]) {
-                            var oldPheromone = pheromone[row][col];
-                            var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
-                            if(isPairExistsInPath(row, col, pairs)) {
-                                pheromone[row][col] = newPheromone+deltaTau;
-                                console.log('updating level');
-                            } else {
-                                pheromone[row][col] = newPheromone;
-                            }
-                        }
+                    for(var item in pairs) {
+                        var pair = pairs[item];
+                        pheromone[pair.previous][pair.next] += deltaTau;
                     }
 
 					pathFound = true;

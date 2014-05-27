@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="83ab9692-20f4-4ef2-ace8-1f752e8010bd" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/algorithms.js" afterPath="$PROJECT_DIR$/algorithms.js" />
-    </list>
+    <list default="true" id="83ab9692-20f4-4ef2-ace8-1f752e8010bd" name="Default" comment="" />
     <ignored path="Зайцева.iws" />
     <ignored path=".idea/workspace.xml" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -28,7 +26,7 @@
       <file leaf-file-name="algorithms.js" pinned="false" current="true" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/algorithms.js">
           <provider selected="true" editor-type-id="text-editor">
-            <state line="34" column="4" selection-start="833" selection-end="833" vertical-scroll-proportion="0.5402951" vertical-offset="102" max-vertical-offset="9724">
+            <state line="24" column="0" selection-start="689" selection-end="689" vertical-scroll-proportion="0.11577752" vertical-offset="306" max-vertical-offset="9724">
               <folding />
             </state>
           </provider>
@@ -48,8 +46,8 @@
   </component>
   <component name="PhpWorkspaceProjectConfiguration" backward_compatibility_performed="true" />
   <component name="ProjectFrameBounds">
-    <option name="x" value="84" />
-    <option name="y" value="12" />
+    <option name="x" value="-1" />
+    <option name="y" value="3" />
     <option name="width" value="1313" />
     <option name="height" value="1050" />
   </component>
@@ -79,7 +77,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -100,6 +97,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -118,7 +116,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="84" y="12" width="1313" height="1050" extended-state="0" />
+    <frame x="-1" y="3" width="1313" height="1050" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -126,7 +124,7 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25338647" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.25737053" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -160,7 +158,14 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/algorithms.js">
       <provider selected="true" editor-type-id="text-editor">
-        <state line="34" column="4" selection-start="833" selection-end="833" vertical-scroll-proportion="0.5402951" vertical-offset="102" max-vertical-offset="9724">
+        <state line="34" column="4" selection-start="833" selection-end="833" vertical-scroll-proportion="0.0" vertical-offset="102" max-vertical-offset="9724">
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/algorithms.js">
+      <provider selected="true" editor-type-id="text-editor">
+        <state line="24" column="0" selection-start="689" selection-end="689" vertical-scroll-proportion="0.11577752" vertical-offset="306" max-vertical-offset="9724">
           <folding />
         </state>
       </provider>

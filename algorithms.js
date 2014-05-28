@@ -7,10 +7,12 @@ function aco(settings) {
 	
 	//console.dir(settings);
 
-	var alpha = 0.5; // коэф. коллективного интеллекта
-	var beta = 0.5; // коэф. личного интеллекта
+	var alpha = 0.6; // коэф. коллективного интеллекта
+	var beta = 0.4; // коэф. личного интеллекта
 	var ktau = 0.01; // коэф. испарени¤ феромона
-	
+
+    var Q = 7;
+
 	var currentVertex;
 
 	var pathFound = false;
@@ -42,13 +44,7 @@ function aco(settings) {
 			// начало цикла одного муравь¤, который проходит по всем вершинам
 			// делать или пока не достигнет конца
             // испарение феромона
-            for(var row in pheromone) {
-                for(var col in pheromone[row]) {
-                    var oldPheromone = pheromone[row][col];
-                    var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
-                    pheromone[row][col] = newPheromone;
-                }
-            }
+
 			while(checkAvailability(currentVertex)) {
 			//checkAvailability(currentVertex);
 				var intervals = {};
@@ -115,10 +111,9 @@ function aco(settings) {
                         var pair = pairs[item];
                         length += graph[pair.previous][pair.next];
                     }
-				    console.log('length', length)
 
 					// определ¤ем прирост феромона 1/Lk(t) формула 2
-					var deltaTau = 5/length;
+					var deltaTau = Q/length;
                     for(var item in pairs) {
                         var pair = pairs[item];
                         pheromone[pair.previous][pair.next] += deltaTau;
@@ -128,11 +123,17 @@ function aco(settings) {
 					
 					break; // муравей дошел до цели, а значит выходим из цикла, больше ему ходить нельз¤. 
 				}
-						   
-				// здесь кончаетс¤ цикл одного муравь¤
+                for(var row in pheromone) {
+                    for(var col in pheromone[row]) {
+                        var oldPheromone = pheromone[row][col];
+                        var newPheromone = (1-ktau)*oldPheromone; // обновление феромона формула 3
+                        pheromone[row][col] = newPheromone;
+                    }
+                }
+		    // здесь кончаетс¤ цикл одного муравь¤
 			}
-			visited.reset();			
-		}
+			visited.reset();
+        }
 	}
 	
 	// далее построение пути
